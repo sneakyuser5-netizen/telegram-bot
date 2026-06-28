@@ -5,17 +5,6 @@ def add_file(category, size, file_id):
     cur = conn.cursor()
 
     cur.execute(
-        "INSERT INTO files(category,size,file_id) VALUES(?,?,?)",
-        (category,size,file_id)
-    )
-
-    conn.commit()
-    conn.close()
-def add_file(category, size, file_id):
-    conn = db()
-    cur = conn.cursor()
-
-    cur.execute(
         "DELETE FROM files WHERE category=?",
         (category,)
     )
