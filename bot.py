@@ -129,7 +129,7 @@ def menu():
         [InlineKeyboardButton("📰 ℹ️ Informations", callback_data="referral")],
         [InlineKeyboardButton("📝 Demander un fichier", callback_data="request_file")],
         [InlineKeyboardButton("📊 Mes Statistiques", callback_data="stats")],
-        [InlineKeyboardButton("🆘 Assistance", callback_data="support")],
+        [InlineKeyboardButton("🆘 Assistanc@e", callback_data="support")],
         [InlineKeyboardButton("🆕 Nouveaux fichiers", callback_data="new_files")],
         [InlineKeyboardButton("📢 Rejoindre la chaîne", url=CHANNEL_LINK)]
     ])
