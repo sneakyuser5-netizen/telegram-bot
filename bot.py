@@ -829,7 +829,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         cur = conn.cursor()
 
         cur.execute(
-            "SELECT name, file_id FROM files WHERE name LIKE ?",
+            "SELECT name, file_id FROM files WHERE LOWER(name) LIKE ?",
             (f"%{text}%",)
         )
 
