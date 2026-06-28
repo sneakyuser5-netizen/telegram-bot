@@ -38,7 +38,7 @@ from commands.filestats import filestats_handler
 from commands.adminpanel import adminpanel_handler
 
 load_dotenv()
-
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))
 CHANNEL_ID = int(os.getenv("CHANNEL_ID", "0"))
