@@ -38,7 +38,6 @@ from commands.filestats import filestats_handler
 from commands.adminpanel import adminpanel_handler
 
 load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))
 CHANNEL_ID = int(os.getenv("CHANNEL_ID", "0"))
@@ -129,7 +128,7 @@ def menu():
         [InlineKeyboardButton("📰 ℹ️ Informations", callback_data="referral")],
         [InlineKeyboardButton("📝 Demander un fichier", callback_data="request_file")],
         [InlineKeyboardButton("📊 Mes Statistiques", callback_data="stats")],
-        [InlineKeyboardButton("🆘 Assistanc@e", callback_data="support")],
+        [InlineKeyboardButton("🆘 Assistance", callback_data="support")],
         [InlineKeyboardButton("🆕 Nouveaux fichiers", callback_data="new_files")],
         [InlineKeyboardButton("📢 Rejoindre la chaîne", url=CHANNEL_LINK)]
     ])
