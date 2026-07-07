@@ -6,31 +6,31 @@ from services.ai_router import ask_ai_provider
 
 def ask(chat_id: int, message: str) -> str:
     """
-    Main Whisper AI engine.
+    Whisper AI Main Engine
 
     Flow:
-        1. Understand user intent
-        2. Try official business response
-        3. Handle follow-up conversations
-        4. Use AI only if needed
+    1. Understand message
+    2. Try business knowledge
+    3. Handle follow-up
+    4. AI fallback
     """
 
     result = interpret(chat_id, message)
 
-    intent = result["intent"]
+    intent = result.get("intent")
 
-    # ----------------------------------
-    # Official business responses
-    # ----------------------------------
+    # ----------------------------
+    # BUSINESS KNOWLEDGE
+    # ----------------------------
 
-    response = get_service_response(chat_id, intent)
+    response = get_service_response(chat_id, message)
 
     if response:
         return response
 
-    # ----------------------------------
-    # Conversation follow-up
-    # ----------------------------------
+    # ----------------------------
+    # FOLLOW UP
+    # ----------------------------
 
     if intent == "follow_up":
 
@@ -47,30 +47,31 @@ def ask(chat_id: int, message: str) -> str:
                     "1️⃣ Open the registration link.\n"
                     "2️⃣ Complete the form.\n"
                     "3️⃣ Pay the registration fee.\n"
-                    "4️⃣ Your lifetime access will be activated.\n\n"
-                    "Would you like me to explain the referral system?"
+                    "4️⃣ Your account will be activated.\n\n"
+                    "Would you also like me to explain how the referral system works?"
                 )
 
-            if topic == "vpn_premium":
+            elif topic == "vpn_premium":
                 return (
-                    "To activate your Premium VPN, simply contact "
-                    "The-Whisperer through the bot menu."
+                    "🚀 To activate Premium VPN, simply contact "
+                    "The-Whisperer using the bot menu."
                 )
 
-            if topic == "vpn_training":
+            elif topic == "vpn_training":
                 return (
-                    "The training starts from beginner level and "
-                    "covers everything needed to create VPN files."
+                    "📡 The VPN training starts from beginner level "
+                    "and teaches you everything needed to create your own VPN files."
                 )
 
-            if topic == "niu":
+            elif topic == "niu":
                 return (
-                    "The-Whisperer can help you obtain your NIU quickly "
-                    "and legally. Simply contact him through the bot menu."
+                    "🆔 The-Whisperer can help you obtain your NIU "
+                    "quickly and legally.\n\n"
+                    "Would you like me to explain the application process?"
                 )
 
-    # ----------------------------------
-    # AI fallback
-    # ----------------------------------
+    # ----------------------------
+    # AI
+    # ----------------------------
 
     return ask_ai_provider(chat_id, message)
