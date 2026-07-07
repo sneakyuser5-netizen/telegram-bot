@@ -6,7 +6,7 @@ import logging
 from datetime import datetime
 from dotenv import load_dotenv
 import time
-
+from commands.chat_ai import chat_ai
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder,
@@ -923,7 +923,13 @@ def main():
 
     # IMPORTANT: Add MessageHandler BEFORE ConversationHandlers
     # This ensures search mode messages are handled before conversation handlers can intercept them
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    app.add_handler(
+    MessageHandler(
+        filters.TEXT & ~filters.COMMAND,
+        chat_ai
+    )
+    )
+    #app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     # ConversationHandlers added AFTER the generic message handler
     app.add_handler(listfiles_handler)
