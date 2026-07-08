@@ -59,8 +59,15 @@ def classify_intent(message: str) -> str:
 
     # Support
     if any(word in text for word in [
-        "support", "administrator", "admin"
-    ]):
+    "support",
+    "administrator",
+    "admin",
+    "help",
+    "contact",
+    "whatsapp",
+    "telegram"
+]):
+    
         return "support"
 
     # Conversation follow-up
