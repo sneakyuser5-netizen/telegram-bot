@@ -14,8 +14,10 @@ def ask(chat_id: int, message: str) -> str:
     url = "https://openrouter.ai/api/v1/chat/completions"
 
     headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json",
+    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+    "Content-Type": "application/json",
+    "HTTP-Referer": "https://telegram.org",
+    "X-Title": "Whisper AI",
     }
 
     payload = {
