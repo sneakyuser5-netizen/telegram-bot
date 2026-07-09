@@ -27,6 +27,6 @@ def ask_ai_provider(chat_id: int, message: str) -> str:
             last_error = e
 
     return (
-        "⚠️ Whisper AI is temporarily unavailable.\n\n"
-        "Please try again in a few moments."
+    "❌ All AI providers failed.\n\n"
+    f"Last error: {last_error}"
     )
