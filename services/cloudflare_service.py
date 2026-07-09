@@ -2,7 +2,7 @@ import requests
 
 from config import (
     CLOUDFLARE_ACCOUNT_ID,
-    CLOUDFLARE_API_TOKEN,
+    CLOUDFLARE_API_KEY,
     CLOUDFLARE_MODEL,
 )
 
@@ -18,7 +18,7 @@ def ask(chat_id: int, message: str) -> str:
     )
 
     headers = {
-        "Authorization": f"Bearer {CLOUDFLARE_API_TOKEN}",
+        "Authorization": f"Bearer {CLOUDFLARE_API_KEY}",
         "Content-Type": "application/json",
     }
 
