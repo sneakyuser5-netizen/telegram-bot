@@ -32,7 +32,7 @@ CLOUDFLARE_MODEL = os.getenv(
 CEREBRAS_API_KEY = os.getenv("CEREBRAS_API_KEY", "")
 CEREBRAS_MODEL = os.getenv(
     "CEREBRAS_MODEL",
-    "llama-3.3-70b"
+    "llama-3.1-8b"
 )
 
 
