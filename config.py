@@ -21,7 +21,7 @@ PLATFORM_URL = os.getenv("PLATFORM_URL", "")
 
 # Cloudflare
 CLOUDFLARE_ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID", "")
-CLOUDFLARE_API_TOKEN = os.getenv("CLOUDFLARE_API_KEY", "")
+CLOUDFLARE_API_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN", "")
 CLOUDFLARE_MODEL = os.getenv(
     "CLOUDFLARE_MODEL",
     "@cf/meta/llama-3.1-8b-instruct"
