@@ -2,19 +2,22 @@ from services.interpreter import interpret
 from services.service_engine import get_service_response
 from services.context_manager import get_context
 from services.ai_router import ask_ai_provider
-from services.cerebras_service import ask as cb
+#from services.cerebras_service import ask as cb
+from services.cloudflare_service import ask as cf
 
 def ask(chat_id: int, message: str):
-    result = interpret(chat_id, message)
+    return cf(chat_id, message)
+#def ask(chat_id: int, message: str):
+   # result = interpret(chat_id, message)
 
-    intent = result["intent"]
+    #intent = result["intent"]
 
-    response = get_service_response(chat_id, intent)
+    #response = get_service_response(chat_id, intent)
 
-    if response:
-        return response
+   # if response:
+       # return response
 
-    return ask_ai_provider(chat_id, message)
+   # return ask_ai_provider(chat_id, message)
 
 #def ask(chat_id: int, message: str) -> str:
     """
