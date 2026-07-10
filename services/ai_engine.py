@@ -2,10 +2,10 @@ from services.interpreter import interpret
 from services.service_engine import get_service_response
 from services.context_manager import get_context
 from services.ai_router import ask_ai_provider
-from services.cloudflare_service import ask as cf
+from services.cerebras_service import ask as cb
 
 def ask(chat_id: int, message: str) -> str:
-    return cf(chat_id, "Say hello.")
+    return cb(chat_id, "Say hello.")
 
 #def ask(chat_id: int, message: str) -> str:
     """
