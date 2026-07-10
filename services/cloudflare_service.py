@@ -8,6 +8,8 @@ from config import (
 
 
 def ask(chat_id: int, message: str) -> str:
+    def ask(chat_id: int, message: str) -> str:
+    raise Exception("Cloudflare function reached")
     """
     Send a prompt to Cloudflare AI.
     """
