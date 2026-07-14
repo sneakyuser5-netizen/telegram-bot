@@ -17,7 +17,19 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
+from flask import Flask
+from threading import Thread
+import os
 
+web = Flask(__name__)
+
+@web.route("/")
+def home():
+    return "Telegram bot is running!"
+
+def run_web():
+    port = int(os.environ.get("PORT", 10000))
+    web.run(host="0.0.0.0", port=port)
 from commands.addfile import addfile_handler
 from database import init_db
 from commands.testfile import testfile_handler
@@ -943,6 +955,7 @@ def main():
     app.add_handler(adminpanel_handler)
 
     app.add_handler(CallbackQueryHandler(buttons))
+    Thread(target=run_web, daemon=True).start()
 
     app.run_polling()
 
