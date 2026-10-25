@@ -1,75 +1,87 @@
 # Telegram Bot
 
-A Python-based Telegram bot project built with `python-telegram-bot` and designed to manage a VPN file catalog, community access flow, AI-powered chat, and admin controls.
+A Python Telegram bot project built with `python-telegram-bot` and designed for VPN file distribution, AI-powered chat, user onboarding, and admin management.
 
-## Current repo status
+## Current repository status
 
 - Language: Python (100%)
-- Framework: `python-telegram-bot` 21.9
-- Runtime: Python 3
+- Primary framework: `python-telegram-bot` 21.9
 - Persistence: SQLite (`database.db`)
-- Web hook/health endpoint: Flask app running on a configurable port
-- AI integrations: Cloudflare, Cerebras, and OpenRouter providers
-- Bot features: user onboarding, referral tracking, file search/download, tutorials, premium offers, and admin tools
+- Web layer: Flask health endpoint on a configurable port
+- AI providers: Cloudflare, Cerebras, and OpenRouter
+- Core functionality: user registration, referrals, file browsing/search, download tracking, tutorials, premium offers, and admin tools
 
-## Project overview
+## Overview
 
-This repository contains a Telegram bot that:
+This bot provides an interactive Telegram interface for users to:
 
-- serves a main interactive menu for users
-- allows browsing and requesting VPN-related files
-- tracks user registrations and referrals in SQLite
-- records file download stats
-- exposes admin commands for backup/restore and file management
-- integrates with AI services for conversational assistant behavior
+- access curated VPN-related files
+- search and download available files
+- view free/premium product offers and training content
+- interact with an AI assistant for general chat
+- receive support and tutorial guidance
+
+Administrators can also:
+
+- upload and remove files
+- review download statistics
+- manage database backups/restores
+- broadcast messages to registered users
 
 ## Repository structure
 
 ```text
 .
-├── bot.py                  # Main bot entry point and command/inline menu logic
-├── config.py               # Environment configuration for Telegram and AI providers
-├── database.py             # SQLite schema initialization
-├── database.db             # Local SQLite database
-├── requirements.txt        # Python dependencies
-├── check_db.py             # Database validation helper
-├── fix_files_table.py      # Database repair helper
-├── sillydev.conf           # Runtime/service config file
-├── test_ai.py              # AI provider smoke test
-├── commands/               # Telegram command handlers
-├── services/               # AI routing, file management, and business logic
-└── .env                    # Local env file (not tracked in repo metadata, expected in deployment)
+├── bot.py               # Main bot entry point and callback/menu logic
+├── config.py            # Environment configuration for Telegram and AI providers
+├── database.py          # SQLite database initialization and schema setup
+├── database.db          # Local SQLite database file
+├── requirements.txt     # Python package dependencies
+├── check_db.py          # Database validation helper
+├── fix_files_table.py   # SQLite repair helper
+├── sillydev.conf        # Runtime or deployment configuration
+├── test_ai.py           # AI provider smoke test
+├── commands/            # Telegram command handlers and flows
+├── services/            # AI logic, file management, and business services
+├── .env                 # Local environment file (expected in deployment)
+└── README.md            # Project documentation
 ```
 
-## Key functionality
+## Main features
 
-### Bot logic
-- `bot.py` initializes the bot, loads env settings, creates the menu, and registers command/handler callbacks.
-- It uses `python-telegram-bot` to manage conversations, callback queries, and admin actions.
-- A Flask app is also started in a background thread to expose a basic health endpoint at `/`.
+### Bot experience
+- interactive start menu and user onboarding
+- referral tracking with reward logic
+- channel membership verification before some actions
+- searchable file access flow
+- support, tutorials, and promotional sections
 
-### User + admin features
-- Start flow for new users
-- Referral and reward tracking
-- Channel membership checks before accessing some flows
-- File browsing/search for downloadable VPN resources
-- Download statistics
-- Admin file management and database backup/restore commands
+### Admin capabilities
+- add/list/delete stored files
+- view file statistics and download totals
+- backup and restore SQLite data
+- apply restore actions
+- broadcast messages to bot users
 
 ### AI integration
-- `services/ai_engine.py` and related modules route messages to AI providers
-- `config.py` defines environment variables for Cloudflare, Cerebras, and OpenRouter
-- `commands/chat_ai.py` sends user messages to the AI engine and returns responses
+`config.py` defines environment-based access for:
+
+- Cloudflare
+- Cerebras
+- OpenRouter
+
+The `commands/chat_ai.py` handler routes user messages to the AI engine via `services.ai_engine`, enabling assistant-style responses in chat.
 
 ### Data layer
-- SQLite tables are created in `database.py`
-- `users` stores user registrations and referral metadata
-- `downloads` tracks category download counts
-- `files` stores file metadata such as category, size, and Telegram `file_id`
+The SQLite tables created in `database.py` include:
 
-## Environment variables
+- `users`: user ID, referral details, reward state, join date
+- `downloads`: category download counters
+- `files`: file metadata like category, size, file IDs, creation time
 
-The app expects the following values in a `.env` file:
+## Environment configuration
+
+Create a `.env` file with values similar to the following:
 
 ```env
 BOT_TOKEN=your_telegram_bot_token
@@ -98,19 +110,15 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Then configure your environment variables and start the bot:
+Then start the bot:
 
 ```bash
 python bot.py
 ```
 
-## Notes
-
-This repository is currently a working Telegram bot codebase with active admin, file distribution, and AI assistant features. It is configured for deployment as a Python service and stores runtime data in a local SQLite database.
-
 ## Dependencies
 
-Core dependencies from `requirements.txt`:
+Installed from `requirements.txt`:
 
 - `python-telegram-bot==21.9`
 - `python-dotenv==1.0.1`
@@ -119,6 +127,8 @@ Core dependencies from `requirements.txt`:
 - `Flask`
 - `httpx==0.27.2`
 
-## License
+## Notes
 
-No explicit license file is present in the repository snapshot reviewed, so licensing details should be confirmed before public or commercial reuse.
+This repository is a working Telegram bot codebase for a file-sharing and support workflow, with active AI integration and admin controls. It is designed to run as a Python service and stores runtime state in a local SQLite database.
+
+No explicit license file was found in the reviewed repository snapshot, so licensing terms should be confirmed before public or commercial reuse.
