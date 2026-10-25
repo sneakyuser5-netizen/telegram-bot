@@ -9,10 +9,16 @@ from config import (
 
 #def ask(chat_id: int, message: str) -> str:
 def ask(chat_id: int, message: str) -> str:
-    raise Exception("Cloudflare function reached")
     """
     Send a prompt to Cloudflare AI.
     """
+    if not CLOUDFLARE_ACCOUNT_ID or not CLOUDFLARE_API_TOKEN:
+        raise RuntimeError(
+            "Cloudflare AI is not configured. Check the local environment."
+        )
+
+    if not message or not message.strip():
+        return "Please send a message."
 
     url = (
         f"https://api.cloudflare.com/client/v4/accounts/"

@@ -1,7 +1,11 @@
+import logging
+
 from services.cloudflare_service import ask as cloudflare_ask
 from services.cerebras_service import ask as cerebras_ask
 from services.openrouter_service import ask as openrouter_ask
 
+
+logger = logging.getLogger(__name__)
 
 PROVIDERS = [
     ("Cloudflare", cloudflare_ask),
@@ -11,22 +15,26 @@ PROVIDERS = [
 
 
 def ask_ai_provider(chat_id: int, message: str) -> str:
-    """
-    Try AI providers in order until one succeeds.
-    """
-
-    last_error = None
-
+    """Try configured AI providers in order until one succeeds."""
     for name, provider in PROVIDERS:
         try:
-            print(f"[AI Router] Trying {name}...")
-            return provider(chat_id, message)
+            answer = provider(chat_id, message)
 
-        except Exception as e:
-            print(f"[AI Router] {name} failed: {e}")
-            last_error = e
+            if isinstance(answer, str) and answer.strip():
+                return answer.strip()
+
+            logger.warning("%s returned an empty response.", name)
+
+        except Exception as exc:
+            # Avoid logging raw exception messages that may contain
+            # request details or other sensitive information.
+            logger.warning(
+                "%s provider failed (%s).",
+                name,
+                type(exc).__name__,
+            )
 
     return (
-    "❌ All AI providers failed.\n\n"
-    f"Last error: {last_error}"
+        "Sorry, the AI service is temporarily unavailable. "
+        "Please try again in a little while."
     )
