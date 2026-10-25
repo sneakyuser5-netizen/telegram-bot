@@ -50,9 +50,27 @@ from commands.filestats import filestats_handler
 from commands.adminpanel import adminpanel_handler
 
 load_dotenv()
-TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))
-CHANNEL_ID = int(os.getenv("CHANNEL_ID", "0"))
+
+TOKEN = os.getenv("BOT_TOKEN", "").strip()
+
+try:
+    ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))
+    CHANNEL_ID = int(os.getenv("CHANNEL_ID", "0"))
+except ValueError as exc:
+    raise SystemExit(
+        "Configuration error: ADMIN_ID and CHANNEL_ID must be integers."
+    ) from exc
+
+if not TOKEN:
+    raise SystemExit(
+        "Configuration error: BOT_TOKEN is missing. Check your local .env file."
+    )
+
+if ADMIN_ID <= 0:
+    raise SystemExit(
+        "Configuration error: set ADMIN_ID to your positive Telegram user ID."
+    )
+
 CHANNEL_LINK = os.getenv("CHANNEL_LINK", "")
 WHATSAPP_URL = os.getenv("WHATSAPP_URL", "")
 PLATFORM_URL = os.getenv("PLATFORM_URL", "")
@@ -266,14 +284,18 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
-    await q.answer()
 
     uid = q.from_user.id
     data = q.data
 
-    # Admin protection
-    if data.startswith("admin_") and uid != ADMIN_ID:
-        return
+    # Admin protection: protect every administrative callback,
+    # including destructive actions.
+    if data.startswith(("admin_", "del_", "confirmdel_")):
+        if ADMIN_ID == 0 or uid != ADMIN_ID:
+            await q.answer("⛔ Unauthorized.", show_alert=True)
+            return
+
+    await q.answer()
 
     # Channel join check
     if not await is_joined(context, uid):
@@ -440,7 +462,7 @@ async def buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if data.startswith("del_"):
-        category = data.replace("del_", "")
+        category = data[len("del_"):]
 
         await q.edit_message_text(
             f"⚠️ Delete {category.upper()}?",
@@ -452,12 +474,41 @@ async def buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if data.startswith("confirmdel_"):
-        category = data.replace("confirmdel_", "")
-        delete_file(category)
+        category = data[len("confirmdel_"):].strip()
 
-        await q.edit_message_text(
-            f"✅ {category.upper()} deleted successfully."
-        )
+        # Only allow deletion of a category currently present in the database.
+        try:
+            available_categories = {
+                item[0] for item in list_files_info()
+            }
+
+            if not category or category not in available_categories:
+                await q.edit_message_text(
+                    "ℹ️ This category no longer exists. Refresh the file list."
+                )
+                return
+
+            deleted_count = delete_file(category)
+
+            if deleted_count:
+                await q.edit_message_text(
+                    f"✅ Deleted {deleted_count} file record(s) "
+                    f"from {category.upper()}."
+                )
+            else:
+                await q.edit_message_text(
+                    f"ℹ️ No files were found in {category.upper()}."
+                )
+
+        except Exception as exc:
+            logging.error(
+                "File deletion failed (%s).",
+                type(exc).__name__,
+            )
+            await q.edit_message_text(
+                "❌ Could not delete the files because of a database error."
+            )
+
         return
 
     if data == "admin_addfile":
@@ -894,7 +945,16 @@ async def buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != ADMIN_ID:
+    user = update.effective_user
+    message = update.effective_message
+
+    if ADMIN_ID <= 0 or user is None or user.id != ADMIN_ID:
+        if message:
+            await message.reply_text("⛔ Unauthorized.")
+        return
+
+    if not context.args:
+        await message.reply_text("Usage: /broadcast your message")
         return
 
     msg = " ".join(context.args)
@@ -916,7 +976,12 @@ async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def stats_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != ADMIN_ID:
+    user = update.effective_user
+    message = update.effective_message
+
+    if ADMIN_ID <= 0 or user is None or user.id != ADMIN_ID:
+        if message:
+            await message.reply_text("⛔ Unauthorized.")
         return
 
     await update.message.reply_text(
@@ -933,17 +998,8 @@ def main():
     app.add_handler(CommandHandler("broadcast", broadcast))
     app.add_handler(CommandHandler("stats", stats_cmd))
 
-    # IMPORTANT: Add MessageHandler BEFORE ConversationHandlers
-    # This ensures search mode messages are handled before conversation handlers can intercept them
-    app.add_handler(
-    MessageHandler(
-        filters.TEXT & ~filters.COMMAND,
-        chat_ai
-    )
-    )
-    #app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-
-    # ConversationHandlers added AFTER the generic message handler
+    # Register conversation handlers before the generic text handler.
+    # This lets active conversations receive their expected text messages.
     app.add_handler(listfiles_handler)
     app.add_handler(deletefile_handler)
     app.add_handler(addfile_handler)
@@ -953,6 +1009,18 @@ def main():
     app.add_handler(applyrestore_handler)
     app.add_handler(filestats_handler)
     app.add_handler(adminpanel_handler)
+
+    # Route remaining text to file search or the AI.
+    async def route_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        user = update.effective_user
+        if user is not None and SEARCH_MODE.get(user.id):
+            await handle_message(update, context)
+        else:
+            await chat_ai(update, context)
+
+    app.add_handler(
+        MessageHandler(filters.TEXT & ~filters.COMMAND, route_text)
+    )
 
     app.add_handler(CallbackQueryHandler(buttons))
     Thread(target=run_web, daemon=True).start()

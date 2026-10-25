@@ -2,9 +2,14 @@ from telegram import Update
 from telegram.ext import ContextTypes, CommandHandler
 
 from services.files import get_file
+from config import ADMIN_ID
 
 
 async def testfile(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # This diagnostic command is restricted to the configured administrator.
+    if ADMIN_ID == 0 or update.effective_user.id != ADMIN_ID:
+        await update.message.reply_text("⛔ Unauthorized.")
+        return
 
     if len(context.args) == 0:
         await update.message.reply_text(

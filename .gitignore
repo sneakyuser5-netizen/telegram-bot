@@ -1,0 +1,28 @@
+
+# Security hardening
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+# Local databases and backups
+*.db
+*.sqlite
+*.sqlite3
+# Python-generated files
+__pycache__/
+*.py[cod]
+# Local security-audit backup
+bot.py.before-security-fix
+
+commands/testfile.py.before-security-fix
+database_restored.db*
+database.db.pre-restore-*
+database.db.replacement
+commands/addfile.py.before-security-fix
+commands/deletefile.py.before-security-fix
+commands/adminpanel.py.before-security-fix
+commands/filestats.py.before-security-fix
+
+commands/chat_ai.py.before-security-fix
+bot.py.before-delete-result-fix
+commands/applyrestore.py.before-offline-fix

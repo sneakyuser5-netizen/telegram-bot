@@ -2,58 +2,30 @@ from services.interpreter import interpret
 from services.service_engine import get_service_response
 from services.context_manager import get_context
 from services.ai_router import ask_ai_provider
-#from services.cerebras_service import ask as cb
-from services.cloudflare_service import ask as cf
 
-def ask(chat_id: int, message: str):
-    return cf(chat_id, message)
-#def ask(chat_id: int, message: str):
-   # result = interpret(chat_id, message)
 
-    #intent = result["intent"]
-
-    #response = get_service_response(chat_id, intent)
-
-   # if response:
-       # return response
-
-   # return ask_ai_provider(chat_id, message)
-
-#def ask(chat_id: int, message: str) -> str:
+def ask(chat_id: int, message: str) -> str:
     """
-    Whisper AI Main Engine
-
-    Flow:
-    1. Understand message
-    2. Try business knowledge
-    3. Handle follow-up
-    4. AI fallback
+    Return a business response when an intent is recognized.
+    Otherwise, use the configured AI provider fallback chain.
     """
+    if not message or not message.strip():
+        return "Please send a message."
 
     result = interpret(chat_id, message)
+    intent = result.get("intent", "general")
 
-    intent = result.get("intent")
-
-    # ----------------------------
-    # BUSINESS KNOWLEDGE
-    # ----------------------------
-
-    response = get_service_response(chat_id, message)
-
+    # Answer known business intents before using an AI provider.
+    response = get_service_response(chat_id, intent)
     if response:
         return response
 
-    # ----------------------------
-    # FOLLOW UP
-    # ----------------------------
-
+    # Handle short follow-up replies using saved conversation context.
     if intent == "follow_up":
-
         context = get_context(chat_id)
 
         if context:
-
-            topic = context["topic"]
+            topic = context.get("topic")
 
             if topic == "bca":
                 return (
@@ -66,27 +38,24 @@ def ask(chat_id: int, message: str):
                     "Would you also like me to explain how the referral system works?"
                 )
 
-            elif topic == "vpn_premium":
+            if topic == "vpn_premium":
                 return (
                     "🚀 To activate Premium VPN, simply contact "
                     "The-Whisperer using the bot menu."
                 )
 
-            elif topic == "vpn_training":
+            if topic == "vpn_training":
                 return (
                     "📡 The VPN training starts from beginner level "
                     "and teaches you everything needed to create your own VPN files."
                 )
 
-            elif topic == "niu":
+            if topic == "niu":
                 return (
                     "🆔 The-Whisperer can help you obtain your NIU "
                     "quickly and legally.\n\n"
                     "Would you like me to explain the application process?"
                 )
 
-    # ----------------------------
-    # AI
-    # ----------------------------
-
+    # Unknown questions go through the provider fallback chain.
     return ask_ai_provider(chat_id, message)

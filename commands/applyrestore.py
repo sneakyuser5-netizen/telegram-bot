@@ -1,43 +1,51 @@
 import os
-import shutil
 
 from telegram import Update
-from telegram.ext import (
-    CommandHandler,
-    ContextTypes
-)
+from telegram.ext import CommandHandler, ContextTypes
 
 from config import ADMIN_ID
+from commands.restoredb import validate_database
+
+RESTORE_DB = "database_restored.db"
 
 
 async def applyrestore_cmd(
     update: Update,
-    context: ContextTypes.DEFAULT_TYPE
+    context: ContextTypes.DEFAULT_TYPE,
 ):
+    user = update.effective_user
+    message = update.effective_message
 
-    if update.effective_user.id != ADMIN_ID:
+    if message is None:
         return
 
-    if not os.path.exists(
-        "database_restored.db"
-    ):
-        await update.message.reply_text(
-            "❌ No restore file found."
+    if ADMIN_ID <= 0 or user is None or user.id != ADMIN_ID:
+        await message.reply_text("⛔ Unauthorized.")
+        return
+
+    if not os.path.isfile(RESTORE_DB):
+        await message.reply_text(
+            "❌ No staged restore found. Use /restoredb first."
         )
         return
 
-    shutil.copyfile(
-        "database_restored.db",
-        "database.db"
-    )
+    valid, reason = validate_database(RESTORE_DB)
+    if not valid:
+        await message.reply_text(
+            f"❌ Restore file rejected: {reason}"
+        )
+        return
 
-    await update.message.reply_text(
-        "✅ Restore applied.\n"
-        "🔄 Restart the bot."
+    await message.reply_text(
+        "✅ The staged database passed validation.\n\n"
+        "⚠️ The live database has NOT been changed.\n"
+        "After stopping the bot completely, run: ""python apply_restore_offline.py. "
+        "Keep the current database and its backups until the "
+        "restored bot has been tested."
     )
 
 
 applyrestore_handler = CommandHandler(
     "applyrestore",
-    applyrestore_cmd
+    applyrestore_cmd,
 )
