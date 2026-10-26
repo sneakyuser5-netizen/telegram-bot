@@ -1,16 +1,17 @@
 import logging
 from time import monotonic
 
-from services.cloudflare_service import ask as cloudflare_ask
-from services.cerebras_service import ask as cerebras_ask
-from services.openrouter_service import ask as openrouter_ask
+from requests.exceptions import HTTPError
 
+from services.cloudflare_service import ask as cloudflare_ask
+from services.gemini_service import ask as gemini_ask
+from services.openrouter_service import ask as openrouter_ask
 
 logger = logging.getLogger(__name__)
 
 PROVIDERS = [
     ("Cloudflare", cloudflare_ask),
-    ("Cerebras", cerebras_ask),
+    ("Gemini", gemini_ask),
     ("OpenRouter", openrouter_ask),
 ]
 
@@ -38,9 +39,22 @@ def ask_ai_provider(chat_id: int, message: str) -> str:
                 elapsed,
             )
 
+        except HTTPError as exc:
+            elapsed = monotonic() - started
+            status = (
+                exc.response.status_code
+                if exc.response is not None
+                else "unknown"
+            )
+            logger.warning(
+                "%s provider failed after %.2f seconds (HTTP %s).",
+                name,
+                elapsed,
+                status,
+            )
+
         except Exception as exc:
             elapsed = monotonic() - started
-
             # Do not log raw exception messages, request details, or secrets.
             logger.warning(
                 "%s provider failed after %.2f seconds (%s).",

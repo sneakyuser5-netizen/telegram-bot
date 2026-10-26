@@ -1,0 +1,63 @@
+import requests
+
+from config import GEMINI_API_KEY, GEMINI_MODEL
+
+
+def ask(chat_id: int, message: str) -> str:
+    """Send a prompt to Google Gemini."""
+    if not GEMINI_API_KEY:
+        raise RuntimeError("Gemini API key is not configured.")
+
+    url = (
+        "https://generativelanguage.googleapis.com/v1beta/"
+        f"models/{GEMINI_MODEL}:generateContent"
+    )
+
+    headers = {
+        "x-goog-api-key": GEMINI_API_KEY,
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "system_instruction": {
+            "parts": [
+                {
+                    "text": (
+                        "You are Whisper AI, the official assistant of "
+                        "The-Whisperer. Be concise, helpful and friendly."
+                    )
+                }
+            ]
+        },
+        "contents": [
+            {
+                "role": "user",
+                "parts": [{"text": message}],
+            }
+        ],
+        "generationConfig": {
+            "temperature": 0.7,
+            "maxOutputTokens": 1024,
+        },
+    }
+
+    response = requests.post(
+        url,
+        headers=headers,
+        json=payload,
+        timeout=(5, 15),
+    )
+    response.raise_for_status()
+
+    data = response.json()
+    candidates = data.get("candidates", [])
+    if not candidates:
+        raise RuntimeError("Gemini returned no response candidates.")
+
+    parts = candidates[0].get("content", {}).get("parts", [])
+    answer = "".join(part.get("text", "") for part in parts).strip()
+
+    if not answer:
+        raise RuntimeError("Gemini returned an empty response.")
+
+    return answer

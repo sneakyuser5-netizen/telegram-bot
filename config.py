@@ -24,21 +24,19 @@ CLOUDFLARE_ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID", "")
 CLOUDFLARE_API_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN", "")
 CLOUDFLARE_MODEL = os.getenv(
     "CLOUDFLARE_MODEL",
-    "@cf/meta/llama-3.1-8b-instruct"
+    "@cf/meta/llama-3.1-8b-instruct",
 )
 
-
-# Cerebras
-CEREBRAS_API_KEY = os.getenv("CEREBRAS_API_KEY", "")
-CEREBRAS_MODEL = os.getenv(
-    "CEREBRAS_MODEL",
-    "llama-3.1-8b"
+# Google Gemini
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_MODEL = os.getenv(
+    "GEMINI_MODEL",
+    "gemini-3.5-flash-lite",
 )
-
 
 # OpenRouter
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 OPENROUTER_MODEL = os.getenv(
     "OPENROUTER_MODEL",
-    "meta-llama/llama-3.1-8b-instruct:free"
+    "meta-llama/llama-3.1-8b-instruct",
 )
