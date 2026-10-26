@@ -1,4 +1,5 @@
 import logging
+from time import monotonic
 
 from services.cloudflare_service import ask as cloudflare_ask
 from services.cerebras_service import ask as cerebras_ask
@@ -17,23 +18,38 @@ PROVIDERS = [
 def ask_ai_provider(chat_id: int, message: str) -> str:
     """Try configured AI providers in order until one succeeds."""
     for name, provider in PROVIDERS:
+        started = monotonic()
+
         try:
             answer = provider(chat_id, message)
+            elapsed = monotonic() - started
 
             if isinstance(answer, str) and answer.strip():
+                logger.info(
+                    "%s provider succeeded in %.2f seconds.",
+                    name,
+                    elapsed,
+                )
                 return answer.strip()
 
-            logger.warning("%s returned an empty response.", name)
+            logger.warning(
+                "%s provider returned an empty response after %.2f seconds.",
+                name,
+                elapsed,
+            )
 
         except Exception as exc:
-            # Avoid logging raw exception messages that may contain
-            # request details or other sensitive information.
+            elapsed = monotonic() - started
+
+            # Do not log raw exception messages, request details, or secrets.
             logger.warning(
-                "%s provider failed (%s).",
+                "%s provider failed after %.2f seconds (%s).",
                 name,
+                elapsed,
                 type(exc).__name__,
             )
 
+    logger.error("All configured AI providers failed.")
     return (
         "Sorry, the AI service is temporarily unavailable. "
         "Please try again in a little while."

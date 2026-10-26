@@ -40,7 +40,7 @@ def ask(chat_id: int, message: str) -> str:
         url,
         headers=headers,
         json=payload,
-        timeout=60,
+        timeout=(5, 15),
     )
 
     response.raise_for_status()
