@@ -636,7 +636,7 @@ async def buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "• Code promo 1XBET et MELBET\n"
             "• Booster les abonnés\n"
             "• Carte Visa virtuelle\n\n"
-            "💳 Inscription à vie : 1900 FCFA\n\n"
+            "💳 Inscription à vie : 2900 FCFA\n\n"
             "👇 Accédez à la plateforme :",
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton("🎓 Plateforme BCA", url=PLATFORM_URL)],
