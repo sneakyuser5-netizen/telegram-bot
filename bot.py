@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import asyncio
 import sqlite3
 import logging
 from datetime import datetime
@@ -1025,6 +1026,7 @@ def main():
     app.add_handler(CallbackQueryHandler(buttons))
     Thread(target=run_web, daemon=True).start()
 
+    asyncio.set_event_loop(asyncio.new_event_loop())
     app.run_polling()
 
 

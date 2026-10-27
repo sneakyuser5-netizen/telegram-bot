@@ -26,3 +26,6 @@ commands/filestats.py.before-security-fix
 commands/chat_ai.py.before-security-fix
 bot.py.before-delete-result-fix
 commands/applyrestore.py.before-offline-fix
+
+# Local project backups
+backups/

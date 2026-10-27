@@ -10,7 +10,7 @@ from config import (
 
 
 #def ask(chat_id: int, message: str, history=None) -> str:
-def ask(chat_id: int, message: str) -> str:
+def ask(chat_id: int, message: str, history=None) -> str:
     """
     Send a prompt to Cloudflare AI.
     """

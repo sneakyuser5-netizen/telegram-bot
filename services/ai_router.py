@@ -64,7 +64,4 @@ def ask_ai_provider(chat_id: int, message: str, history=None) -> str:
             )
 
     logger.error("All configured AI providers failed.")
-    return (
-        "Sorry, the AI service is temporarily unavailable. "
-        "Please try again in a little while."
-    )
+    return ""
