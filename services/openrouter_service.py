@@ -1,12 +1,14 @@
 import requests
 
+from services.identity import SYSTEM_PROMPT
+
 from config import (
     OPENROUTER_API_KEY,
     OPENROUTER_MODEL,
 )
 
 
-def ask(chat_id: int, message: str) -> str:
+def ask(chat_id: int, message: str, history=None) -> str:
     """
     Send a prompt to OpenRouter AI.
     """
@@ -25,11 +27,19 @@ def ask(chat_id: int, message: str) -> str:
         "messages": [
             {
                 "role": "system",
-                "content": (
-                    "You are Whisper AI, the official assistant of "
-                    "The-Whisperer. Be concise, helpful and friendly."
-                ),
+                "content": SYSTEM_PROMPT,
             },
+            *[
+                {
+                    "role": item["role"],
+                    "content": item["content"].strip(),
+                }
+                for item in (history or [])[-12:]
+                if isinstance(item, dict)
+                and item.get("role") in ("user", "assistant")
+                and isinstance(item.get("content"), str)
+                and item["content"].strip()
+            ],
             {
                 "role": "user",
                 "content": message,

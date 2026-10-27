@@ -1,9 +1,10 @@
 import requests
 
+from services.identity import SYSTEM_PROMPT
 from config import GEMINI_API_KEY, GEMINI_MODEL
 
 
-def ask(chat_id: int, message: str) -> str:
+def ask(chat_id: int, message: str, history=None) -> str:
     """Send a prompt to Google Gemini."""
     if not GEMINI_API_KEY:
         raise RuntimeError("Gemini API key is not configured.")
@@ -22,18 +23,26 @@ def ask(chat_id: int, message: str) -> str:
         "system_instruction": {
             "parts": [
                 {
-                    "text": (
-                        "You are Whisper AI, the official assistant of "
-                        "The-Whisperer. Be concise, helpful and friendly."
-                    )
+                    "text": SYSTEM_PROMPT
                 }
             ]
         },
         "contents": [
+            *[
+                {
+                    "role": "model" if item.get("role") == "assistant" else "user",
+                    "parts": [{"text": item["content"].strip()}],
+                }
+                for item in (history or [])[-12:]
+                if isinstance(item, dict)
+                and item.get("role") in ("user", "assistant")
+                and isinstance(item.get("content"), str)
+                and item["content"].strip()
+            ],
             {
                 "role": "user",
                 "parts": [{"text": message}],
-            }
+            },
         ],
         "generationConfig": {
             "temperature": 0.7,

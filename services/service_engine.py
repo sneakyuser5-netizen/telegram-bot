@@ -13,20 +13,63 @@ def get_service_response(chat_id: int, intent: str) -> str | None:
 
     # ===========================
     # SERVICES LIST
-    # ===========================
-
     if intent == "services":
+        set_context(chat_id, "services")
         return (
             "🚀 Here are the services offered by The-Whisperer:\n\n"
-
             "1️⃣ Biz Connect Academy (BCA)\n"
             "2️⃣ Premium VPN\n"
             "3️⃣ VPN Training\n"
             "4️⃣ NIU Assistance\n"
             "5️⃣ Free VPN Files\n"
             "6️⃣ Support\n\n"
-
             "Which one would you like to know more about?"
+        )
+
+    # EXPLAIN ALL OFFICIAL SERVICES
+    if intent == "services_explain_all":
+        set_context(chat_id, "services")
+        return (
+            "🚀 Here is what The-Whisperer offers:\n\n"
+            "1️⃣ Biz Connect Academy (BCA)\n"
+            f"{details['bca']['description']}\n"
+            f"💰 Registration: {services['bca']['price']}\n"
+            f"🔗 Register: {services['bca']['registration_link']}\n\n"
+            "2️⃣ Premium VPN\n"
+            f"{details['vpn_premium']['description']}\n"
+            f"💰 Price: {services['vpn_premium']['price']}\n"
+            f"📅 Duration: {services['vpn_premium']['duration']}\n"
+            f"📶 Data: {services['vpn_premium']['daily_data']}\n\n"
+            "3️⃣ VPN Training\n"
+            f"{details['vpn_training']['description']}\n"
+            f"💰 Price: {services['vpn_training']['price']}\n\n"
+            "4️⃣ Free VPN Files\n"
+            f"{details['free_files']['description']}\n\n"
+            "5️⃣ NIU Assistance\n"
+            f"{details['niu']['description']}\n"
+            f"💰 Service fee: {services['niu']['price']}\n\n"
+            "6️⃣ Support\n"
+            f"{details['support']['description']}\n\n"
+            "💬 Which service interests you most? Tell me, and I'll "
+            "guide you through the next step."
+        )
+
+    # Redirect requests for services not currently offered.
+    if intent == "unsupported_service":
+        set_context(chat_id, "services")
+        return (
+            "😊 Thanks for your interest! That service isn't among "
+            "The-Whisperer's current offers.\n\n"
+            "However, I'd be happy to help you with one of our six services:\n\n"
+            "1️⃣ Biz Connect Academy (BCA) — registration for 2,900 FCFA.\n"
+            "2️⃣ Premium VPN — 500 FCFA for 30 days, with 250 MB/day.\n"
+            "3️⃣ VPN Training — learn to create, configure and manage VPN files.\n"
+            "4️⃣ Free VPN Files — access available VPN files through the bot menu.\n"
+            "5️⃣ NIU Assistance — service fee of 1,000 FCFA.\n"
+            "6️⃣ Support — contact The-Whisperer for assistance.\n\n"
+            "🚀 One of these services might be exactly what you need! "
+            "Which one would you like to explore? I'll guide you through "
+            "the next steps."
         )
 
     # ===========================

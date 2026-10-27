@@ -16,13 +16,13 @@ PROVIDERS = [
 ]
 
 
-def ask_ai_provider(chat_id: int, message: str) -> str:
+def ask_ai_provider(chat_id: int, message: str, history=None) -> str:
     """Try configured AI providers in order until one succeeds."""
     for name, provider in PROVIDERS:
         started = monotonic()
 
         try:
-            answer = provider(chat_id, message)
+            answer = provider(chat_id, message, history=history)
             elapsed = monotonic() - started
 
             if isinstance(answer, str) and answer.strip():

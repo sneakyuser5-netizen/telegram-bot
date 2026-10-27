@@ -1,5 +1,7 @@
 import requests
 
+from services.identity import SYSTEM_PROMPT
+
 from config import (
     CLOUDFLARE_ACCOUNT_ID,
     CLOUDFLARE_API_TOKEN,
@@ -7,7 +9,7 @@ from config import (
 )
 
 
-#def ask(chat_id: int, message: str) -> str:
+#def ask(chat_id: int, message: str, history=None) -> str:
 def ask(chat_id: int, message: str) -> str:
     """
     Send a prompt to Cloudflare AI.
@@ -30,21 +32,18 @@ def ask(chat_id: int, message: str) -> str:
         "Content-Type": "application/json",
     }
 
-    payload = {
-        "messages": [
-            {
-                "role": "system",
-                "content": (
-                    "You are Whisper AI, the official assistant of "
-                    "The-Whisperer. Be concise, helpful and friendly."
-                ),
-            },
-            {
-                "role": "user",
-                "content": message,
-            },
-        ]
-    }
+    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+
+    if history:
+        for item in history[-12:]:
+            role = item.get("role")
+            content = item.get("content")
+            if role in ("user", "assistant") and isinstance(content, str) and content.strip():
+                messages.append({"role": role, "content": content.strip()})
+
+    messages.append({"role": "user", "content": message})
+
+    payload = {"messages": messages}
 
     response = requests.post(
         url,

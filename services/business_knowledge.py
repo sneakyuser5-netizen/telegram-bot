@@ -12,7 +12,7 @@ BUSINESS = {
     "services": {
         "bca": {
             "name": "Biz Connect Academy (BCA)",
-            "price": "1,900 FCFA",
+            "price": "2,900 FCFA",
             "registration_link": "https://bizconnectacademy.com/register?ref=ONLINECA",
             "countries": [
                 "Burkina Faso",
