@@ -9,6 +9,7 @@ from services.context_manager import (
 )
 from services.ai_router import ask_ai_provider
 from services.business_knowledge import BUSINESS
+from services.service_engine import get_service_response
 
 
 INTENT_TOPICS = {
@@ -53,6 +54,37 @@ def ask(chat_id: int, message: str) -> str:
     # Capture earlier turns before adding the current message.
     history = get_history(chat_id)
     context = get_context(chat_id)
+
+    # Answer expiry questions without inventing an expiry period.
+    if intent == "free_files":
+        expiry_terms = (
+            "expir", "expiry", "expire", "validity", "valid until",
+            "date limite", "expiration", "expire le", "durée de validité",
+        )
+        if any(term in message.lower() for term in expiry_terms):
+            if any(term in message.lower() for term in (
+                "date limite", "expiration", "durée de validité",
+            )):
+                response = (
+                    "Je n'ai pas d'information confirmée sur la date "
+                    "d'expiration des fichiers VPN gratuits. "
+                    "Vérifiez les détails du fichier ou contactez le support "
+                    "pour confirmation."
+                )
+            else:
+                response = (
+                    "I don't have verified information about when the free "
+                    "VPN files expire. Please check the file details or "
+                    "contact support to confirm."
+                )
+            return _remember(chat_id, message, response)
+
+    # Use the predefined response for Free VPN Files.
+    # This prevents the AI from inventing external download links.
+    if intent == "free_files":
+        response = get_service_response(chat_id, intent)
+        if response:
+            return _remember(chat_id, message, response)
 
     # Update the topic when a service is clearly identified.
     topic = INTENT_TOPICS.get(intent)

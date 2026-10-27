@@ -42,9 +42,13 @@ SERVICE_DETAILS = {
     },
     "niu": {
         "description": (
-            "NIU means Numéro d'Identifiant Unique. It is an official "
-            "tax identification number used for administrative and "
-            "tax purposes."
+            "NIU means Numéro d'Identifiant Unique. The-Whisperer offers "
+            "assistance to interested customers who want to obtain a NIU. "
+            "The service fee is 1,000 FCFA. Customers must be willing to "
+            "provide the personal details required for the process, such "
+            "as their name and date of birth. They should contact official "
+            "support privately for the next steps. Never promise approval "
+            "or a processing time that has not been confirmed."
         ),
         "service_fee": "1,000 FCFA",
     },
