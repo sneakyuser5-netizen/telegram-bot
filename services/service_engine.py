@@ -101,7 +101,7 @@ def get_service_response(chat_id: int, intent: str) -> str | None:
             f"🔗 Register here: {bca['registration_link']}\n\n"
             "Open the link to register. If you need help, contact "
             "support on Telegram @The_whisperer237 or WhatsApp "
-            "237675310628."
+            "237641037454."
         )
 
     # ===========================

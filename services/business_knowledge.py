@@ -5,7 +5,7 @@ BUSINESS = {
     },
     "contact": {
         "telegram": "@The_whisperer237",
-        "whatsapp": "237675310628",
+        "whatsapp": "237641037454",
     },
     "services": {
         "bca": {
