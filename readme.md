@@ -1,134 +1,124 @@
-# Telegram Bot
 
-A Python Telegram bot project built with `python-telegram-bot` and designed for VPN file distribution, AI-powered chat, user onboarding, and admin management.
+# Whisper AI — Telegram Bot
 
-## Current repository status
+**Whisper AI** is a Python-powered Telegram bot developed by The-Whisperer. It combines conversational AI, VPN file distribution, digital-service information, user onboarding, and administrative tools in one platform.
 
-- Language: Python (100%)
-- Primary framework: `python-telegram-bot` 21.9
-- Persistence: SQLite (`database.db`)
-- Web layer: Flask health endpoint on a configurable port
-- AI providers: Cloudflare, Cerebras, and OpenRouter
-- Core functionality: user registration, referrals, file browsing/search, download tracking, tutorials, premium offers, and admin tools
+The project is built with `python-telegram-bot`, SQLite, Flask, and multiple AI providers.
 
-## Overview
+## Features
 
-This bot provides an interactive Telegram interface for users to:
+### Conversational AI
+- AI-powered conversations for general questions and business enquiries.
+- Context-aware follow-up responses using conversation history.
+- Support for English and French conversations.
+- Multiple AI providers with fallback routing.
+- Business-specific answers based on the project's official service information.
 
-- access curated VPN-related files
-- search and download available files
-- view free/premium product offers and training content
-- interact with an AI assistant for general chat
-- receive support and tutorial guidance
+### VPN Files and Digital Services
+- Browse and search available VPN-related files.
+- Access free VPN files through the bot's menu.
+- View premium offers and training information.
+- Receive tutorials and support guidance.
 
-Administrators can also:
+### User Management
+- User registration and onboarding.
+- Referral tracking and reward-related functionality.
+- Download tracking and statistics.
+- Channel membership checks where configured.
 
-- upload and remove files
-- review download statistics
-- manage database backups/restores
-- broadcast messages to registered users
+### Administration
+- Upload, list, and delete files.
+- Review file statistics and download totals.
+- Back up and restore the SQLite database.
+- Manage restoration workflows.
+- Broadcast messages to registered users.
 
-## Repository structure
+## AI Providers
+
+The project currently includes integrations for:
+
+| Provider | Configuration |
+| --- | --- |
+| Cloudflare Workers AI | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_MODEL` |
+| Google Gemini | `GEMINI_API_KEY`, `GEMINI_MODEL` |
+| OpenRouter | `OPENROUTER_API_KEY`, `OPENROUTER_MODEL` |
+
+The AI router attempts the configured providers in sequence. Actual availability depends on valid credentials, provider service status, account limits, and model availability.
+
+## Official Services
+
+### Biz Connect Academy (BCA)
+
+Biz Connect Academy is an online learning platform offering practical digital-skills training.
+
+Listed topics include:
+- AI video creation
+- WhatsApp bot creation
+- Selling digital products
+- Affiliate marketing
+- TikTok monetization
+- Virtual bank cards
+- Growing social-network followers
+- CapCut and Canva Pro
+- Promo codes for 1xBet and MelBet
+- Facebook and TikTok advertising campaigns
+
+**Price:** 2,900 FCFA  
+**Access:** Lifetime access  
+**Registration:** https://bizconnectacademy.com/register?ref=ONLINECA
+
+Supported countries include Burkina Faso, Cameroon, Chad, Central African Republic, Congo, Côte d'Ivoire, Gabon, Guinea, Guinea-Bissau, Mali, Niger, Senegal, Togo, Benin, Gambia, and the Democratic Republic of the Congo.
+
+### Premium VPN
+- Price: 500 FCFA
+- Duration: 30 days
+- Daily data allowance: 250 MB
+
+### VPN Training
+Practical training on creating, configuring, and managing VPN files. Pricing is negotiable.
+
+### Free VPN Files
+VPN files are made available through the bot and updated periodically.
+
+### NIU Assistance
+Assistance with obtaining a Numéro d'Identifiant Unique (NIU), the unique identification number used for relevant administrative and tax purposes in Cameroon.
+
+**Listed price:** 1,000 FCFA.
+
+### Contact and Support
+- Telegram: https://t.me/The_whisperer237
+- WhatsApp: +237 641 037 454
+
+Service details and availability may change. The bot should not promise guaranteed income or results.
+
+## Technology Stack
+
+- **Language:** Python
+- **Telegram framework:** `python-telegram-bot` 21.9
+- **Database:** SQLite
+- **Web endpoint:** Flask
+- **Configuration:** `python-dotenv`
+- **HTTP client:** `httpx`
+- **AI integrations:** Cloudflare Workers AI, Google Gemini, OpenRouter
+
+## Repository Structure
 
 ```text
-.
-├── bot.py               # Main bot entry point and callback/menu logic
-├── config.py            # Environment configuration for Telegram and AI providers
-├── database.py          # SQLite database initialization and schema setup
-├── database.db          # Local SQLite database file
-├── requirements.txt     # Python package dependencies
-├── check_db.py          # Database validation helper
-├── fix_files_table.py   # SQLite repair helper
-├── sillydev.conf        # Runtime or deployment configuration
-├── test_ai.py           # AI provider smoke test
-├── commands/            # Telegram command handlers and flows
-├── services/            # AI logic, file management, and business services
-├── .env                 # Local environment file (expected in deployment)
-└── README.md            # Project documentation
-```
-
-## Main features
-
-### Bot experience
-- interactive start menu and user onboarding
-- referral tracking with reward logic
-- channel membership verification before some actions
-- searchable file access flow
-- support, tutorials, and promotional sections
-
-### Admin capabilities
-- add/list/delete stored files
-- view file statistics and download totals
-- backup and restore SQLite data
-- apply restore actions
-- broadcast messages to bot users
-
-### AI integration
-`config.py` defines environment-based access for:
-
-- Cloudflare
-- Cerebras
-- OpenRouter
-
-The `commands/chat_ai.py` handler routes user messages to the AI engine via `services.ai_engine`, enabling assistant-style responses in chat.
-
-### Data layer
-The SQLite tables created in `database.py` include:
-
-- `users`: user ID, referral details, reward state, join date
-- `downloads`: category download counters
-- `files`: file metadata like category, size, file IDs, creation time
-
-## Environment configuration
-
-Create a `.env` file with values similar to the following:
-
-```env
-BOT_TOKEN=your_telegram_bot_token
-ADMIN_ID=your_admin_user_id
-CHANNEL_ID=your_channel_id
-CHANNEL_LINK=https://t.me/yourchannel
-WHATSAPP_URL=https://wa.me/your_number
-PLATFORM_URL=https://example.com/platform
-
-CLOUDFLARE_ACCOUNT_ID=your_account_id
-CLOUDFLARE_API_TOKEN=your_api_token
-CLOUDFLARE_MODEL=@cf/meta/llama-3.1-8b-instruct
-
-CEREBRAS_API_KEY=your_key
-CEREBRAS_MODEL=llama-3.1-8b
-
-OPENROUTER_API_KEY=your_key
-OPENROUTER_MODEL=meta-llama/llama-3.1-8b-instruct:free
-```
-
-## Installation
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-Then start the bot:
-
-```bash
-python bot.py
-```
-
-## Dependencies
-
-Installed from `requirements.txt`:
-
-- `python-telegram-bot==21.9`
-- `python-dotenv==1.0.1`
-- `requests`
-- `google-generativeai`
-- `Flask`
-- `httpx==0.27.2`
-
-## Notes
-
-This repository is a working Telegram bot codebase for a file-sharing and support workflow, with active AI integration and admin controls. It is designed to run as a Python service and stores runtime state in a local SQLite database.
-
-No explicit license file was found in the reviewed repository snapshot, so licensing terms should be confirmed before public or commercial reuse.
+telegram-bot/
+├── bot.py
+├── config.py
+├── database.py
+├── requirements.txt
+├── check_db.py
+├── fix_files_table.py
+├── test_ai.py
+├── commands/
+│   └── Telegram command handlers
+├── services/
+│   ├── ai_engine.py
+│   ├── ai_router.py
+│   ├── cloudflare_service.py
+│   ├── gemini_service.py
+│   ├── openrouter_service.py
+│   └── Business and file-management services
+└── 
