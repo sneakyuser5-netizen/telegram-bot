@@ -45,15 +45,15 @@ def _redirect_response() -> str:
     niu = services["niu"]
 
     return (
-        "I'm here to help you with The-Whisperer's official services 😊\\n\\n"
-        "You can explore:\\n"
-        f"• {bca['name']} — registration: {bca['price']}\\n"
+        "I'm here to help you with The-Whisperer's official services 😊\n\n"
+        "You can explore:\n"
+        f"• {bca['name']} — registration: {bca['price']}\n"
         f"• {premium_vpn['name']} — {premium_vpn['price']} for "
-        f"{premium_vpn['duration']}, with {premium_vpn['daily_data']}\\n"
-        f"• {vpn_training['name']} — price {vpn_training['price']}\\n"
-        f"• {services['free_files']['name']}\\n"
-        f"• {niu['name']} — service fee: {niu['price']}\\n"
-        f"• {services['support']['name']}\\n\\n"
+        f"{premium_vpn['duration']}, with {premium_vpn['daily_data']}\n"
+        f"• {vpn_training['name']} — price {vpn_training['price']}\n"
+        f"• {services['free_files']['name']}\n"
+        f"• {niu['name']} — service fee: {niu['price']}\n"
+        f"• {services['support']['name']}\n\n"
         "Which service would you like to know more about?"
     )
 
