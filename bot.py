@@ -49,6 +49,7 @@ from commands.restoredb import restoredb_handler
 from commands.applyrestore import applyrestore_handler
 from commands.filestats import filestats_handler
 from commands.adminpanel import adminpanel_handler
+from services.service_engine import get_service_response
 
 load_dotenv()
 
@@ -220,6 +221,20 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"👇 Explorez les options ci-dessous :",
         reply_markup=menu()
     )
+
+
+
+async def services_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Display the official list of services."""
+    chat_id = update.effective_chat.id
+    response = get_service_response(chat_id, "services")
+
+    if response:
+        await update.message.reply_text(response)
+    else:
+        await update.message.reply_text(
+            "Désolé, la liste des services est indisponible pour le moment."
+        )
 
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -996,6 +1011,7 @@ def main():
     app = ApplicationBuilder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("services", services_cmd))
     app.add_handler(CommandHandler("broadcast", broadcast))
     app.add_handler(CommandHandler("stats", stats_cmd))
 
